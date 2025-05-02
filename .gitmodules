@@ -1,0 +1,6 @@
+[submodule "user-workspace/user-workspace/repo"]
+	path = user-workspace/user-workspace/repo
+	url = https://github.com/elvisrincon1/reportes-godsplanstore-clean.git
+[submodule "user-workspace/user-workspace/reportes-godsplanstore-clean"]
+	path = user-workspace/user-workspace/reportes-godsplanstore-clean
+	url = https://github.com/elvisrincon1/reportes-godsplanstore-clean.git
