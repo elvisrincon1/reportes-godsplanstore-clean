@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reportar Ventas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <header class="bg-blue-700 text-white p-4 shadow">
+    <h1 class="text-2xl font-semibold">Reportar Ventas</h1>
+  </header>
+  <main class="flex flex-1 overflow-hidden">
+    <nav class="w-64 bg-white border-r border-gray-200 p-4 flex flex-col space-y-4">
+      <button data-tab="reportar" class="tab-button bg-blue-100 text-blue-700 rounded p-2 font-semibold">Reportar Ventas</button>
+      <button data-tab="inventario" class="tab-button hover:bg-blue-100 rounded p-2 font-semibold">Inventario</button>
+      <button data-tab="proveedores" class="tab-button hover:bg-blue-100 rounded p-2 font-semibold">Proveedores</button>
+      <button data-tab="afiliados" class="tab-button hover:bg-blue-100 rounded p-2 font-semibold">Afiliados</button>
+      <button data-tab="informes" class="tab-button hover:bg-blue-100 rounded p-2 font-semibold">Solicitar Informes</button>
+    </nav>
+    <section class="flex-1 overflow-auto p-6 bg-white">
+      <!-- Reportar Ventas -->
+      <div id="reportar" class="tab-content">
+        <h2 class="text-xl font-semibold mb-4">Reportar Ventas</h2>
+        <form id="form-reportar" class="space-y-4 max-w-lg">
+          <div class="relative">
+            <label for="vendedor" class="block font-medium mb-1">Vendedor</label>
+            <input type="text" id="vendedor" name="vendedor" class="w-full border border-gray-300 rounded p-2" autocomplete="off" required />
+            <ul id="vendedor-suggestions" class="absolute z-10 bg-white border border-gray-300 rounded w-full max-h-40 overflow-auto hidden"></ul>
+          </div>
+          <div class="relative">
+            <label for="producto-buscar" class="block font-medium mb-1">Producto</label>
+            <input type="text" id="producto-buscar" placeholder="Buscar producto..." class="w-full border border-gray-300 rounded p-2" autocomplete="off" />
+            <ul id="producto-suggestions" class="absolute z-10 bg-white border border-gray-300 rounded w-full max-h-40 overflow-auto hidden"></ul>
+          </div>
+          <div>
+            <label for="precio" class="block font-medium mb-1">Precio de Venta</label>
+            <input type="number" id="precio" name="precio" class="w-full border border-gray-300 rounded p-2" min="0" step="0.01" required />
+          </div>
+          <div>
+            <label for="fecha" class="block font-medium mb-1">Fecha</label>
+            <input type="date" id="fecha" name="fecha" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+          <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition">Reportar Venta</button>
+        </form>
+        <div id="mensaje-reportar" class="mt-4 text-green-600 font-semibold"></div>
+      </div>
+
+      <!-- Inventario -->
+      <div id="inventario" class="tab-content hidden">
+        <h2 class="text-xl font-semibold mb-4">Inventario</h2>
+        <form id="form-producto" class="space-y-4 max-w-lg mb-6">
+          <input type="hidden" id="producto-id" />
+          <div>
+            <label for="producto-nombre" class="block font-medium mb-1">Nombre del Producto</label>
+            <input type="text" id="producto-nombre" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+          <div>
+            <label for="producto-precio-compra" class="block font-medium mb-1">Precio de Compra</label>
+            <input type="number" id="producto-precio-compra" class="w-full border border-gray-300 rounded p-2" min="0" step="0.01" required />
+          </div>
+          <div>
+            <label for="producto-precio-venta" class="block font-medium mb-1">Precio de Venta</label>
+            <input type="number" id="producto-precio-venta" class="w-full border border-gray-300 rounded p-2" min="0" step="0.01" required />
+          </div>
+          <div>
+            <label for="producto-proveedores" class="block font-medium mb-1">Proveedores (hasta 3)</label>
+            <input type="text" id="producto-proveedores-buscar" placeholder="Buscar proveedores..." class="w-full border border-gray-300 rounded p-2 mb-2" />
+            <select id="producto-proveedores" multiple size="5" class="w-full border border-gray-300 rounded p-2"></select>
+          </div>
+          <div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Guardar Producto</button>
+            <button type="button" id="btn-cancelar-producto" class="ml-2 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100 hidden">Cancelar</button>
+          </div>
+        </form>
+        <table class="w-full border border-gray-300 rounded text-left text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border-b border-gray-300">Nombre</th>
+              <th class="p-2 border-b border-gray-300">Precio de Compra</th>
+              <th class="p-2 border-b border-gray-300">Precio de Venta</th>
+              <th class="p-2 border-b border-gray-300">Proveedores</th>
+              <th class="p-2 border-b border-gray-300">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-inventario"></tbody>
+        </table>
+      </div>
+
+      <!-- Proveedores -->
+      <div id="proveedores" class="tab-content hidden">
+        <h2 class="text-xl font-semibold mb-4">Proveedores</h2>
+        <form id="form-proveedor" class="space-y-4 max-w-md mb-6">
+          <input type="hidden" id="proveedor-id" />
+          <div>
+            <label for="proveedor-nombre" class="block font-medium mb-1">Nombre del Proveedor</label>
+            <input type="text" id="proveedor-nombre" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Guardar Proveedor</button>
+          <button type="button" id="btn-cancelar-proveedor" class="ml-2 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100 hidden">Cancelar</button>
+        </form>
+        <table class="w-full border border-gray-300 rounded text-left text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border-b border-gray-300">Nombre</th>
+              <th class="p-2 border-b border-gray-300">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-proveedores"></tbody>
+        </table>
+      </div>
+
+      <!-- Afiliados -->
+      <div id="afiliados" class="tab-content hidden">
+        <h2 class="text-xl font-semibold mb-4">Afiliados</h2>
+        <form id="form-afiliado" class="space-y-4 max-w-md mb-6">
+          <input type="hidden" id="afiliado-id" />
+          <div>
+            <label for="afiliado-nombre" class="block font-medium mb-1">Nombre del Afiliado</label>
+            <input type="text" id="afiliado-nombre" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Guardar Afiliado</button>
+          <button type="button" id="btn-cancelar-afiliado" class="ml-2 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100 hidden">Cancelar</button>
+        </form>
+        <table class="w-full border border-gray-300 rounded text-left text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border-b border-gray-300">Nombre</th>
+              <th class="p-2 border-b border-gray-300">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-afiliados"></tbody>
+        </table>
+      </div>
+
+      <!-- Informes -->
+      <div id="informes" class="tab-content hidden">
+        <h2 class="text-xl font-semibold mb-4">Solicitar Informes</h2>
+        <form id="form-informes" class="space-y-4 max-w-lg mb-6">
+          <div>
+            <label for="fecha-inicio" class="block font-medium mb-1">Fecha Inicio</label>
+            <input type="date" id="fecha-inicio" name="fecha-inicio" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+          <div>
+            <label for="fecha-fin" class="block font-medium mb-1">Fecha Fin</label>
+            <input type="date" id="fecha-fin" name="fecha-fin" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+          <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition">Generar Informe</button>
+        </form>
+        <div id="resultado-informe" class="overflow-auto max-h-96 border border-gray-300 rounded p-4 bg-gray-50"></div>
+        <div class="mt-4 space-x-2">
+          <button id="btn-exportar-pdf" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition hidden"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+          <button id="btn-exportar-xlsx" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition hidden"><i class="fas fa-file-excel"></i> Exportar XLSX</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="bg-gray-100 text-center p-4 text-sm text-gray-600">
+    &copy; 2024 Reportar Ventas
+  </footer>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
